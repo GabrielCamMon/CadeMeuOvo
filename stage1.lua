@@ -14,39 +14,53 @@ local tableEggs = {}
 
 local IndexRun = 1
 local TableMax = 0
+local contEggs = 2
 
 
 
 
 
 
-local function endGame()
+
+local function nextStage()
 	composer.gotoScene( "menu", { time=800, effect="crossFade" } )
 end
 
 
 
 local function moveDuck(duck)
-
     
+    local  removeEggs = function(duck)
+        if(contEggs == 0)then
+        nextStage()
+        else
+        moveDuck(duck)
+        end
+    end
 
     TableMax = table.maxn(tableButtonsCommand)
-     IndexRun = IndexRun +1
-        if(IndexRun<=TableMax)then
-            if RouterX+1 <= 3 then
-                if(tableBlocks[RouterX].hasDuck == true) then
-                    if(duck.south_east == true) then
-                        RouterX = RouterX + 1
-                        tableBlocks[RouterX-1].hasDuck = false
-                        tableBlocks[RouterX].hasDuck = true 
-                        display.remove(tableEggs[RouterX]);
-                        transition.to( duck, { x=duck.x + tableBlocks[2].x - tableBlocks[1].x, y=duck.y + tableBlocks[2].y - tableBlocks[1].y,time = 500,onComplete = moveDuck} )
-     
+    IndexRun = IndexRun +1
+    if(IndexRun<=TableMax)then
+        if RouterX+1 <= 3 then
+            if(tableBlocks[RouterX].hasDuck == true) then
+                if(duck.south_east == true) then
+                    RouterX = RouterX + 1
+                    tableBlocks[RouterX-1].hasDuck = false
+                    tableBlocks[RouterX].hasDuck = true 
+                    if(tableBlocks[RouterX].hasEgg == true)then
+                    display.remove(tableEggs[RouterX])
+                    tableBlocks[RouterX].hasEgg = false
+                    contEggs = contEggs - 1
                     end
+                    transition.to( duck, { x=duck.x + tableBlocks[2].x - tableBlocks[1].x, y=duck.y + tableBlocks[2].y - tableBlocks[1].y,time = 500,onComplete = removeEggs} )
+                    
                 end
-            end 
-        end    
+            end
+        end 
+    end    
 end
+
+
 
 local function buttonEventMoviment( event, buttonsCommand, seta_frente )
     local button = event.target
@@ -63,10 +77,18 @@ local function buttonEventMoviment( event, buttonsCommand, seta_frente )
             button.y = event.y - button.touchOffsetY
         end
     elseif ( "ended" == phase or "cancelled" == phase ) then
-            seta_frente = display.newImageRect("imgs/seta_frente_semSombra.png",60,60)
+            seta_frente = display.newImageRect(buttonsCommand,"imgs/seta_frente_semSombra.png",60,60)
             seta_frente.x = display.contentCenterX + 300;
             seta_frente.y = display.contentCenterY-100;
-            seta_frente:addEventListener( "touch", buttonEventMoviment )
+
+
+            local funcButton = function(buttonsCommand,seta_frente)
+                return function(event)
+                    buttonEventMoviment(event,buttonsCommand,seta_frente)
+                end
+            end
+
+            seta_frente:addEventListener( "touch",funcButton(buttonsCommand,seta_frente))
             
            
             local centralX = display.contentCenterX
@@ -113,9 +135,13 @@ function scene:create( event )
 
     local backGroup = display.newGroup()
     sceneGroup:insert( backGroup )
+    
     local duck = display.newGroup() 
     sceneGroup:insert( duck )
     local eggs = display.newGroup() 
+    sceneGroup:insert( eggs )
+  
+
     local positionCommand = display.newGroup();
     sceneGroup:insert( positionCommand )
     local circleCommand = display.newGroup();
@@ -149,7 +175,7 @@ function scene:create( event )
     seta_frente.name = "setafrente"
 
 
-    local duck = display.newImageRect( duck, "imgs/pato-direita.png", 168/2.5, 143/2.5)
+    local duck = display.newImageRect( duck, "imgs/newpato_direita.png", 168/2.4, 143/2.4)
     physics.addBody( duck, "static" )
     duck.x = display.contentCenterX - 90
     duck.y = display.contentCenterY  - 40

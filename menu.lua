@@ -28,7 +28,7 @@ function scene:create( event )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-    local playButton = display.newImageRect( sceneGroup, "imgs/play.png", 100, 100 )
+    local playButton = display.newImageRect( sceneGroup, "imgs/play_menu.png", 150, 150 )
 	playButton.x = display.contentCenterX
 	playButton.y = display.contentCenterY
 
