@@ -48,7 +48,7 @@ local function moveDuck(duck)
         end    
 end
 
-local function buttonEventMoviment( event )
+local function buttonEventMoviment( event, buttonsCommand )
     local button = event.target
     local phase = event.phase
 
@@ -63,7 +63,7 @@ local function buttonEventMoviment( event )
             button.y = event.y - button.touchOffsetY
         end
     elseif ( "ended" == phase or "cancelled" == phase ) then
-            local seta_frente = display.newImageRect("imgs/seta_frente_semSombra.png",60,60)
+            local seta_frente = display.newImageRect(buttonsCommand,"imgs/seta_frente_semSombra.png",60,60)
             seta_frente.x = display.contentCenterX + 300;
             seta_frente.y = display.contentCenterY-100;
             seta_frente:addEventListener( "touch", buttonEventMoviment )
@@ -182,10 +182,16 @@ function scene:create( event )
 
 
     table.insert(tableButtonsCommand, startDuck)
-    local teste = function()moveDuck(duck) end
+    local funcDuck = function()moveDuck(duck) end
 
-    myCircle:addEventListener( "tap", teste )
-    seta_frente:addEventListener( "touch", buttonEventMoviment, buttonsCommand  )
+
+    local funcButton = function(buttonsCommand)
+        return function(event)
+            buttonEventMoviment(event,buttonsCommand)
+        end
+    end
+    myCircle:addEventListener( "tap", funcDuck )
+    seta_frente:addEventListener( "touch", funcButton(buttonsCommand))
     
 
 end
