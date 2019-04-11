@@ -9,7 +9,7 @@ physics.start()
 
 local RouterX = 1
 local tableBlocks = {}
-tableButtonsCommand = {}
+local tableButtonsCommand = {}
 local tableEggs = {}
 
 local IndexRun = 1
@@ -17,15 +17,14 @@ local TableMax = 0
 local contEggs = 2
 
 
-
-
-
-
-
 local function nextStage()
 	composer.gotoScene( "menu", { time=800, effect="crossFade" } )
 end
 
+local function repeatStage()
+    composer.removeScene("stage1")
+    composer.gotoScene( "restart1"  )  
+end
 
 
 local function moveDuck(duck)
@@ -163,6 +162,7 @@ function scene:create( event )
 
     local myCircle = display.newCircle( circleCommand, display.contentCenterX+180 , display.contentCenterY+ 135, 40  )
     myCircle.fill = { type="image", filename="imgs/play.png" }
+    myCircle.myName = "play"
 
     local startDuck = display.newImageRect( buttonsCommand, "imgs/patoStartVerde.png", 46, 46 )
     startDuck.x = display.contentCenterX - 295
@@ -208,7 +208,16 @@ function scene:create( event )
 
 
     table.insert(tableButtonsCommand, startDuck)
-    local funcDuck = function()moveDuck(duck) end
+    
+    local funcDuck = function()
+        if(myCircle.myName == "play")then
+            myCircle.myName = "stop"
+            return moveDuck(duck) 
+        else
+            return repeatStage()
+        end
+        
+    end
 
 
     local funcButton = function(buttonsCommand,seta_frente)
@@ -252,7 +261,7 @@ function scene:hide( event )
 
 
 	elseif ( phase == "did" ) then
-
+     
 		physics.pause()
 		composer.removeScene( "stage1" )
 	end
