@@ -6,43 +6,6 @@ local scene = composer.newScene()
 local physics = require( "physics" )
 physics.start()
 
-local sheetOptions =
-{
-    frames =
-    {
-        {   -- 1) asteroid 1
-            x = 0,
-            y = 0,
-            width = 235, 
-            height = 250
-        },
-        {   -- 2) asteroid 2
-            x = 0,
-            y = 85,
-            width = 168/2.4, 
-            height = 143/2.4
-        },
-        {   -- 3) asteroid 3
-            x = 0,
-            y = 168,
-            width = 168/2.4, 
-            height = 143/2.4
-        },
-        {   -- 4) ship
-            x = 0,
-            y = 265,
-            width = 168/2.4, 
-            height = 143/2.4
-        },
-        {   -- 5) laser
-            x = 98,
-            y = 265,
-            width = 168/2.4, 
-            height = 143/2.4
-        },
-    },
-}
-local objectSheet = graphics.newImageSheet( "imgs/sprite_pato.png", sheetOptions )
 
 local RouterX = 1
 local tableBlocks = {}
@@ -73,12 +36,7 @@ local function moveDuck(duck)
         moveDuck(duck)
         end
     end
-    local  moveDuckstep2 = function(duck)
-        display.remove(tableEggs[RouterX])
-        local yStep = tableBlocks[2].y - tableBlocks[1].y
-        transition.to( duck, { x=duck.x + (tableBlocks[2].x - tableBlocks[1].x)/2, y=duck.y + (yStep + yStep/2),time = 250,onComplete = removeEggs} )
-      
-    end
+
     TableMax = table.maxn(tableButtonsCommand)
     IndexRun = IndexRun +1
     if(IndexRun<=TableMax)then
@@ -89,11 +47,11 @@ local function moveDuck(duck)
                     tableBlocks[RouterX-1].hasDuck = false
                     tableBlocks[RouterX].hasDuck = true 
                     if(tableBlocks[RouterX].hasEgg == true)then
-                    
+                    display.remove(tableEggs[RouterX])
                     tableBlocks[RouterX].hasEgg = false
                     contEggs = contEggs - 1
                     end
-                    transition.to( duck, { x=duck.x + (tableBlocks[2].x - tableBlocks[1].x)/2, y=duck.y - (tableBlocks[2].y - tableBlocks[1].y)/2,time = 250,onComplete = moveDuckstep2} )
+                    transition.to( duck, { x=duck.x + tableBlocks[2].x - tableBlocks[1].x, y=duck.y + tableBlocks[2].y - tableBlocks[1].y,time = 500,onComplete = removeEggs} )
                     
                 end
             end
@@ -217,9 +175,9 @@ function scene:create( event )
     seta_frente.name = "setafrente"
 
 
-    local duck = display.newImageRect( duck, objectSheet, 1, 168/2.4, 143/2.4)
+    local duck = display.newImageRect( duck, "imgs/newpato_direita.png", 168/2.4, 143/2.4)
     physics.addBody( duck, "static" )
-    duck.x = display.contentCenterX - 98
+    duck.x = display.contentCenterX - 90
     duck.y = display.contentCenterY  - 40
     duck.north_east = false
     duck.north_west = false
