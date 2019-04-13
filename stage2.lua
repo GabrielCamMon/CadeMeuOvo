@@ -41,10 +41,10 @@ local sheetOptions =
 local objectSheet = graphics.newImageSheet( "imgs/sprite_pato.png", sheetOptions )
 
 local sequenceData = {
-    {name = "frente_direita",frames ={1}},
-    {name = "frente_esquerda",frames ={2}},
-    {name = "costa_direita",frames ={3}},
-    {name = "costa_direita",frames ={4}},
+    {name = 1,frames ={1}},
+    {name = 2,frames ={2}},
+    {name = 3,frames ={3}},
+    {name = 4,frames ={4}},
 }
 
 local RouterX = 1
@@ -56,14 +56,17 @@ local IndexRun = 1
 local TableMax = 0
 local contEggs = 2
 
-
+local tablePhase= {
+        {"true","true","true"}
+        
+}
 local function nextStage()
-	composer.gotoScene( "menu", { time=800, effect="crossFade" } )
+	composer.gotoScene( "restart2", { time=800, effect="crossFade" } )
 end
 
 local function repeatStage()
-    composer.removeScene("stage1")
-    composer.gotoScene( "restart1"  )  
+    composer.removeScene("stage2")
+    composer.gotoScene( "restart2"  )  
 end
 
 
@@ -84,29 +87,35 @@ local function moveDuck(duck)
     end
     TableMax = table.maxn(tableButtonsCommand)
     IndexRun = IndexRun +1
+   
     if(IndexRun<=TableMax)then
-        if RouterX+1 <= 3 then
-            if(tableBlocks[RouterX].hasDuck == true) then
-                if(duck.south_east == true) then
-                    RouterX = RouterX + 1
-                    tableBlocks[RouterX-1].hasDuck = false
-                    tableBlocks[RouterX].hasDuck = true 
-                    if(tableBlocks[RouterX].hasEgg == true)then
-                    
-                    tableBlocks[RouterX].hasEgg = false
-                    contEggs = contEggs - 1
+        
+        if(tableButtonsCommand[IndexRun].myName == "setafrente")then
+            if RouterX+1 <= 3 then
+                if(tableBlocks[RouterX].hasDuck == true) then
+                    if(duck.south_east == true) then
+                        RouterX = RouterX + 1
+                        tableBlocks[RouterX-1].hasDuck = false
+                        tableBlocks[RouterX].hasDuck = true 
+                        if(tableBlocks[RouterX].hasEgg == true)then
+                        
+                        tableBlocks[RouterX].hasEgg = false
+                        contEggs = contEggs - 1
+                        end
+                        transition.to( duck, { x=duck.x + (tableBlocks[2].x - tableBlocks[1].x)/2, y=duck.y - (tableBlocks[2].y - tableBlocks[1].y)/2,time = 250,onComplete = moveDuckstep2} )
+                        
                     end
-                    transition.to( duck, { x=duck.x + (tableBlocks[2].x - tableBlocks[1].x)/2, y=duck.y - (tableBlocks[2].y - tableBlocks[1].y)/2,time = 250,onComplete = moveDuckstep2} )
-                    
                 end
-            end
-        end 
+            end 
+        elseif(tableButtonsCommand[IndexRun].myName == "setagiro")then
+            duck:setSequence(2) 
+        end
     end    
 end
 
 
 
-local function buttonEventMoviment( event, buttonsCommand, seta_frente )
+local function buttonEventMovimentFrente( event, buttonsCommand, seta_frente )
     local button = event.target
     local phase = event.phase
 
@@ -124,15 +133,79 @@ local function buttonEventMoviment( event, buttonsCommand, seta_frente )
             seta_frente = display.newImageRect(buttonsCommand,"imgs/seta_frente_semSombra.png",60,60)
             seta_frente.x = display.contentCenterX + 300;
             seta_frente.y = display.contentCenterY-100;
-
+            seta_frente.myName = "setafrente"
+          
 
             local funcButton = function(buttonsCommand,seta_frente)
                 return function(event)
-                    buttonEventMoviment(event,buttonsCommand,seta_frente)
+                    buttonEventMovimentFrente(event,buttonsCommand,seta_frente)
                 end
             end
 
             seta_frente:addEventListener( "touch",funcButton(buttonsCommand,seta_frente))
+            
+           
+            local centralX = display.contentCenterX
+            local centralY = display.contentCenterY
+            local buttonTableMax =  table.maxn(tableButtonsCommand)
+            local positionButton = table.indexOf(tableButtonsCommand,button)
+            
+            if ((button.x > (tableButtonsCommand[buttonTableMax].x + 30) and  button.x < (tableButtonsCommand[buttonTableMax].x + 75) and  button.y > (tableButtonsCommand[buttonTableMax].y - 38) and  button.y < (tableButtonsCommand[buttonTableMax].y + 38)) )then
+                if(buttonTableMax == 1) then
+                    button.x = tableButtonsCommand[buttonTableMax].x + 40
+                    button.y = tableButtonsCommand[buttonTableMax].y
+                else
+                    button.x = tableButtonsCommand[buttonTableMax].x + 46
+                    button.y = tableButtonsCommand[buttonTableMax].y
+                end
+                
+                if (table.indexOf( tableButtonsCommand, button ))== nil then
+                    table.insert(tableButtonsCommand, button)  
+                end
+               
+            elseif((button.x > (centralX-300) and button.x < (centralX+140) and button.y < (centralY+173) and button.y > (centralY+100 )) == false)then
+                display.remove(button)
+                if (table.indexOf( tableButtonsCommand, button )~= nil) then
+                    for var = positionButton, buttonTableMax, 1 do
+                        table.remove(tableButtonsCommand)
+                    end
+                     
+                end       
+            end
+     
+      
+        display.currentStage:setFocus( nil )
+    end
+    return true
+end
+
+local function buttonEventMovimentGiro( event, buttonsCommand, seta_giro )
+    local button = event.target
+    local phase = event.phase
+
+    if ( "began" == phase ) then
+        display.currentStage:setFocus( button )
+        button.touchOffsetX = event.x - button.x
+        button.touchOffsetY = event.y - button.y
+   
+    elseif ( "moved" == phase ) then
+        if(button.touchOffsetX ~= nil and button.touchOffsetY ~= nil )then
+            button.x = event.x - button.touchOffsetX
+            button.y = event.y - button.touchOffsetY
+        end
+    elseif ( "ended" == phase or "cancelled" == phase ) then
+        seta_giro = display.newImageRect(buttonsCommand, "imgs/seta_girar_semSobra.png",60,60)
+        seta_giro.x = display.contentCenterX + 300;
+        seta_giro.y = display.contentCenterY-40;
+        seta_giro.myName = "setagiro"
+       
+            local funcButtonGiro = function(buttonsCommand,seta_giro)
+                return function(event)
+                    buttonEventMovimentGiro(event,buttonsCommand,seta_giro)
+                end
+            end
+
+            seta_giro:addEventListener( "touch",funcButtonGiro(buttonsCommand,seta_giro))
             
            
             local centralX = display.contentCenterX
@@ -217,7 +290,12 @@ function scene:create( event )
     local seta_frente = display.newImageRect(buttonsCommand, "imgs/seta_frente_semSombra.png",60,60)
     seta_frente.x = display.contentCenterX + 300;
     seta_frente.y = display.contentCenterY-100;
-    seta_frente.name = "setafrente"
+    seta_frente.myName = "setafrente"
+
+    local seta_giro = display.newImageRect(buttonsCommand, "imgs/seta_girar_semSobra.png",60,60)
+    seta_giro.x = display.contentCenterX + 300;
+    seta_giro.y = display.contentCenterY-40;
+    seta_giro.myName = "setagiro"
 
 
     local duck = display.newSprite( duckGroup, objectSheet, sequenceData)
@@ -231,7 +309,7 @@ function scene:create( event )
     duck.myName = "duck"
     duck:scale(0.30,0.24)
 
-    duck:setSequence("frente_direita")
+ 
 
     for  var = 3 ,1,-1 do
         local newBlocks = display.newImageRect( backGroup, "imgs/bloco.png", 168/2, 143/2)
@@ -269,13 +347,22 @@ function scene:create( event )
     end
 
 
-    local funcButton = function(buttonsCommand,seta_frente)
+    local funcButtonFrente = function(buttonsCommand,seta_frente)
         return function(event)
-            buttonEventMoviment(event,buttonsCommand,seta_frente)
+            buttonEventMovimentFrente(event,buttonsCommand,seta_frente)
+        end
+    end
+
+    local funcButtonGiro = function(buttonsCommand,seta_giro)
+        return function(event)
+            buttonEventMovimentGiro(event,buttonsCommand,seta_giro)
         end
     end
     myCircle:addEventListener( "tap", funcDuck )
-    seta_frente:addEventListener( "touch", funcButton(buttonsCommand,seta_frente))
+
+    seta_frente:addEventListener( "touch", funcButtonFrente(buttonsCommand,seta_frente))
+
+    seta_giro:addEventListener( "touch", funcButtonGiro(buttonsCommand,seta_giro))
     
 
 end
@@ -312,7 +399,7 @@ function scene:hide( event )
 	elseif ( phase == "did" ) then
      
 		physics.pause()
-		composer.removeScene( "stage1" )
+		composer.removeScene( "stage2" )
 	end
 end
 
