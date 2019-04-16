@@ -58,7 +58,7 @@ local contEggs = 2
 
 
 local function nextStage()
-	composer.gotoScene( "menu", { time=800, effect="crossFade" } )
+	composer.gotoScene( "stage2", { time=800, effect="crossFade" } )
 end
 
 local function repeatStage()
