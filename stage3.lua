@@ -55,16 +55,16 @@ local tableEggs = {}
 
 local IndexRun = 1
 local TableMax = 0
-local contEggs = 4
+local contEggs = 1
 
 
 local function nextStage()
-	composer.gotoScene( "stage3", { time=800, effect="crossFade" } )
+	composer.gotoScene( "menu", { time=800, effect="crossFade" } )
 end
 
 local function repeatStage()
-    composer.removeScene("stage2")
-    composer.gotoScene( "restart2"  )  
+    composer.removeScene("stage3")
+    composer.gotoScene( "restart3"  )  
 end
 
 
@@ -96,6 +96,12 @@ local function moveDuck(duck)
             transition.to( duck, { x=duck.x - (tableBlocks[2].x - tableBlocks[1].x)/2, y=duck.y + (yStep + yStep/2),time = 250,onComplete = removeEggs} )
         elseif(duck.north_west)then
             transition.to( duck, { x=duck.x - (tableBlocks[2].x - tableBlocks[1].x)/2, y=duck.y-6.5 + (yStep - yStep/2),time = 250,onComplete = removeEggs} )
+        elseif(duck.north_east)then
+            contEggs = contEggs - 1
+            transition.to( duck, { x=duck.x - (tableBlocks[2].x - tableBlocks[1].x)/2,
+             y=duck.y-6.5 + (yStep - yStep/2),
+             time = 250,
+             onComplete = removeEggs} )
         end
 
     end
@@ -129,7 +135,14 @@ local function moveDuck(duck)
                     transition.to(duck, {y = duck.y - (tableBlocks[2].y - tableBlocks[1].y)/2, time =  250,onComplete= moveDuckSimpleJump})
                 end
             else
-                transition.to(duck, {y = duck.y - (tableBlocks[2].y - tableBlocks[1].y)/2, time =  250,onComplete= moveDuckSimpleJump})
+
+                transition.to( duck, 
+                { 
+                x=duck.x - (tableBlocks[2].x - tableBlocks[1].x)/2, 
+                y=duck.y - (tableBlocks[2].y - tableBlocks[1].y),
+                time = 250, 
+                onComplete= moveDuckstep2
+            } )
             end
         elseif(tableButtonsCommand[IndexRun].myName == "setagiro")then
             while(true)do
@@ -296,16 +309,18 @@ function scene:create( event )
 	local sceneGroup = self.view
     physics.pause()  
 
-    local blockX = -100
-    local blockY = -70
+    local blockX = 0
+    local blockY = 0
 
     local backGroup = display.newGroup()
     sceneGroup:insert( backGroup )
     
-    local duckGroup = display.newGroup() 
-    sceneGroup:insert( duckGroup )
     local eggs = display.newGroup() 
     sceneGroup:insert( eggs )
+
+    local duckGroup = display.newGroup() 
+    sceneGroup:insert( duckGroup )
+   
   
 
     local positionCommand = display.newGroup();
@@ -349,8 +364,8 @@ function scene:create( event )
 
     local duck = display.newSprite( duckGroup, objectSheet, sequenceData)
     physics.addBody( duck, "static" )
-    duck.x = display.contentCenterX - 98
-    duck.y = display.contentCenterY  - 100
+    duck.x = display.contentCenterX - 30
+    duck.y = display.contentCenterY - 14
     duck.north_east = false
     duck.north_west = false
     duck.south_east = true
@@ -359,9 +374,7 @@ function scene:create( event )
     duck:scale(0.24,0.18)
 
  
-
- 
-    for  var = 4 ,1,-1 do
+    
         local newBlocks = display.newImageRect( backGroup, "imgs/bloco.png", 168, 143)
         newBlocks.x = display.contentCenterX + blockX
         newBlocks.y = display.contentCenterY + blockY
@@ -375,17 +388,10 @@ function scene:create( event )
             egg.status = varCreate
             table.insert(tableEggs, egg); 
             table.insert(tableBlocks, newBlocks)
-    
-            tableBlocks[1].hasDuck = true
-            display.remove(tableEggs[1])
-    
-            blockX = blockX + 33        
-            blockY = blockY + 13.5
-    end
 
-            blockX = blockX - 63.5       
-            blockY = blockY
-
+            blockX = blockX - 30        
+            blockY = blockY + 13
+   
     local newBlocks = display.newImageRect( backGroup, "imgs/bloco.png", 168, 143)
         newBlocks.x = display.contentCenterX + blockX
         newBlocks.y = display.contentCenterY + blockY
@@ -401,7 +407,7 @@ function scene:create( event )
             table.insert(tableBlocks, newBlocks)
     
             tableBlocks[1].hasDuck = true
-            display.remove(tableEggs[1])
+            display.remove(tableEggs[2])
     
             
 
@@ -473,7 +479,7 @@ function scene:hide( event )
 	elseif ( phase == "did" ) then
      
 		physics.pause()
-		composer.removeScene( "stage2" )
+		composer.removeScene( "stage3" )
 	end
 end
 
