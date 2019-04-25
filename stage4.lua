@@ -55,16 +55,16 @@ local tableEggs = {}
 
 local IndexRun = 1
 local TableMax = 0
-local contEggs = 1
+local contEggs = 4
 
 
 local function nextStage()
-	composer.gotoScene( "stage4", { time=800, effect="crossFade" } )
+	composer.gotoScene( "menu", { time=800, effect="crossFade" } )
 end
 
 local function repeatStage()
-    composer.removeScene("stage3")
-    composer.gotoScene( "restart3"  )  
+    composer.removeScene("stage4")
+    composer.gotoScene( "restart4"  )  
 end
 
 
@@ -82,14 +82,23 @@ local function moveDuck(duck)
         local yStep = tableBlocks[2].y - tableBlocks[1].y
 
         if(duck.south_east)then
-            transition.to(duck, {y = duck.y - (tableBlocks[2].y - tableBlocks[1].y)/2, time =  250,onComplete= moveDuckSimpleJump})
+            if(tableBlocks[RouterX+1].hasEgg)then
+                tableBlocks[RouterX+1].hasEgg = false
+                contEggs = contEggs - 1
+                display.remove(tableEggs[RouterX+1])
+            end
+            transition.to( duck, { x=duck.x + (tableBlocks[2].x - tableBlocks[1].x)/2, y=duck.y + (yStep + yStep/2),time = 250,onComplete = removeEggs} )
         elseif(duck.south_west)then
-            transition.to(duck, {y = duck.y - (tableBlocks[2].y - tableBlocks[1].y)/2, time =  250,onComplete= moveDuckSimpleJump})
+            if(RouterX == 3 and RouterY == -1 )then
+                contEggs = contEggs - 1
+                display.remove(tableEggs[5])
+            end
+            transition.to( duck, { x=duck.x - (tableBlocks[2].x - tableBlocks[1].x)/2, y=duck.y + (yStep + yStep/2),time = 250,onComplete = removeEggs} )
         elseif(duck.north_west)then
-            transition.to(duck, {y = duck.y - (tableBlocks[2].y - tableBlocks[1].y)/2, time =  250,onComplete= moveDuckSimpleJump})
+            transition.to( duck, { x=duck.x - (tableBlocks[2].x - tableBlocks[1].x)/2, y=duck.y-6.5 + (yStep - yStep/2),time = 250,onComplete = removeEggs} )
         elseif(duck.north_east)then
             contEggs = contEggs - 1
-            transition.to( duck, { x=duck.x - (tableBlocks[2].x - tableBlocks[1].x)/2,
+            transition.to( duck, { x=duck.x + (tableBlocks[2].x - tableBlocks[1].x)/2,
              y=duck.y-6.5 + (yStep - yStep/2),
              time = 250,
              onComplete = removeEggs} )
@@ -105,11 +114,14 @@ local function moveDuck(duck)
     if((tableButtonsCommand[IndexRun]== nil)== false)then
         if(tableButtonsCommand[IndexRun].myName == "setafrente")then
             if(duck.south_east) then
-               
+                if RouterX+1 <= 3 then
+                    RouterX = RouterX + 1
+                    transition.to( duck, { x=duck.x + (tableBlocks[2].x - tableBlocks[1].x)/2, y=duck.y - (tableBlocks[2].y - tableBlocks[1].y)/2,time = 250,onComplete = moveDuckstep2} )
+                else
                     transition.to(duck, {y = duck.y - (tableBlocks[2].y - tableBlocks[1].y)/2, time =  250,onComplete= moveDuckSimpleJump})
-            
+                end
             elseif(duck.south_west)then
-                if RouterX == 3 then
+                if false then
                     RouterY = RouterY - 1
                     transition.to( duck, { x=duck.x - (tableBlocks[2].x - tableBlocks[1].x)/2,  y=duck.y - (tableBlocks[2].y - tableBlocks[1].y)/2,time = 250, onComplete= moveDuckstep2} )
                 else
@@ -122,15 +134,17 @@ local function moveDuck(duck)
                 else
                     transition.to(duck, {y = duck.y - (tableBlocks[2].y - tableBlocks[1].y)/2, time =  250,onComplete= moveDuckSimpleJump})
                 end
-            else
-
-                transition.to( duck, 
-                { 
-                x=duck.x - (tableBlocks[2].x - tableBlocks[1].x)/2, 
-                y=duck.y - (tableBlocks[2].y - tableBlocks[1].y),
-                time = 250, 
-                onComplete= moveDuckstep2
-            } )
+            elseif(duck.north_east)then
+                if(RouterX == 3)then
+                    RouterY = RouterY + 1
+                    transition.to( duck, { 
+                        x=duck.x + (tableBlocks[2].x - tableBlocks[1].x)/2,  
+                        y=duck.y - 6.5 -(tableBlocks[2].y - tableBlocks[1].y)/2,
+                        time = 250, 
+                        onComplete = moveDuckstep2})
+                else
+                    transition.to(duck, {y = duck.y - (tableBlocks[2].y - tableBlocks[1].y)/2, time =  250,onComplete= moveDuckSimpleJump})
+                end
             end
         elseif(tableButtonsCommand[IndexRun].myName == "setagiro")then
             while(true)do
@@ -297,12 +311,22 @@ function scene:create( event )
 	local sceneGroup = self.view
     physics.pause()  
 
-    local blockX = 0
-    local blockY = 0
+    local blockX = -100
+    local blockY = -40
 
+   
     local backGroup = display.newGroup()
     sceneGroup:insert( backGroup )
+
     
+    local blockSpecial2 = display.newGroup();
+    sceneGroup:insert( blockSpecial2 )
+
+    local blockSpecial = display.newGroup();
+    sceneGroup:insert( blockSpecial )
+
+   
+
     local eggs = display.newGroup() 
     sceneGroup:insert( eggs )
 
@@ -310,6 +334,7 @@ function scene:create( event )
     sceneGroup:insert( duckGroup )
    
   
+    
 
     local positionCommand = display.newGroup();
     sceneGroup:insert( positionCommand )
@@ -352,8 +377,8 @@ function scene:create( event )
 
     local duck = display.newSprite( duckGroup, objectSheet, sequenceData)
     physics.addBody( duck, "static" )
-    duck.x = display.contentCenterX - 30
-    duck.y = display.contentCenterY - 14
+    duck.x = display.contentCenterX  - 102
+    duck.y = display.contentCenterY - 67
     duck.north_east = false
     duck.north_west = false
     duck.south_east = true
@@ -362,8 +387,10 @@ function scene:create( event )
     duck:scale(0.24,0.18)
 
  
-    
-        local newBlocks = display.newImageRect( backGroup, "imgs/bloco.png", 168, 143)
+      
+      
+    for  var = 4 ,1,-1 do
+        local newBlocks = display.newImageRect( blockSpecial, "imgs/bloco.png", 168, 143)
         newBlocks.x = display.contentCenterX + blockX
         newBlocks.y = display.contentCenterY + blockY
         newBlocks.hasEgg = false
@@ -376,27 +403,31 @@ function scene:create( event )
             egg.status = varCreate
             table.insert(tableEggs, egg); 
             table.insert(tableBlocks, newBlocks)
+    
+    
+            blockX = blockX + 33        
+            blockY = blockY + 13.5
+    end
+    
+    blockX = blockX - 5       
+    blockY = blockY - 25
 
-            blockX = blockX - 30        
-            blockY = blockY + 13
-   
-    local newBlocks = display.newImageRect( backGroup, "imgs/bloco.png", 168, 143)
-        newBlocks.x = display.contentCenterX + blockX
-        newBlocks.y = display.contentCenterY + blockY
-        newBlocks.hasEgg = false
-        newBlocks.hasDuck = false
-        newBlocks:scale(0.4,0.4)
-       local egg = display.newImageRect( eggs, "imgs/egg.png", 366/14, 398/14 )
-            newBlocks.hasEgg = true
-            egg.x = display.contentCenterX + blockX 
-            egg.y = display.contentCenterY + blockY - 25
-            egg.status = varCreate
-            table.insert(tableEggs, egg); 
-            table.insert(tableBlocks, newBlocks)
-    
-            tableBlocks[1].hasDuck = true
-            display.remove(tableEggs[2])
-    
+local newBlocks = display.newImageRect( blockSpecial2, "imgs/bloco.png", 168, 143)
+newBlocks.x = display.contentCenterX + blockX
+newBlocks.y = display.contentCenterY + blockY
+newBlocks.hasEgg = false
+newBlocks.hasDuck = false
+newBlocks:scale(0.4,0.4)
+local egg = display.newImageRect( eggs, "imgs/egg.png", 366/14, 398/14 )
+    newBlocks.hasEgg = true
+    egg.x = display.contentCenterX + blockX 
+    egg.y = display.contentCenterY + blockY - 25
+    egg.status = varCreate
+    table.insert(tableEggs, egg); 
+    table.insert(tableBlocks, newBlocks)
+
+    tableBlocks[1].hasDuck = true
+    display.remove(tableEggs[1])
             
 
 
