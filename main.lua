@@ -12,5 +12,10 @@ display.setStatusBar( display.HiddenStatusBar )
 -- Seed the random number generator
 math.randomseed( os.time() )
 
+
+musicTrack = audio.loadStream( "audio/patoMusic.mp3" )
+
+audio.play( musicTrack, { channel=1, loops=-1 } )
+
 -- Go to the menu screen
 composer.gotoScene( "menu" )

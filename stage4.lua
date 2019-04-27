@@ -498,7 +498,7 @@ function scene:hide( event )
 	elseif ( phase == "did" ) then
      
 		physics.pause()
-		composer.removeScene( "stage3" )
+		composer.removeScene( "stage4" )
 	end
 end
 
