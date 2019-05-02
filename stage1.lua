@@ -169,10 +169,10 @@ end
 
 function scene:create( event )
 
-     display.newRect(display.contentCenterX-750, display.contentCenterY+200,50,50):setFillColor( 0, 0, 0 )
-     display.newRect(display.contentCenterX+550, display.contentCenterY+200,50,50):setFillColor( 0, 0, 0 )
-     display.newRect(display.contentCenterX+550, display.contentCenterY+420,50,50):setFillColor( 0, 0, 0 )
-     display.newRect(display.contentCenterX-750, display.contentCenterY+420,50,50):setFillColor( 0, 0, 0 )
+   --  display.newRect(display.contentCenterX-750, display.contentCenterY+200,50,50):setFillColor( 0, 0, 0 )
+  --   display.newRect(display.contentCenterX+550, display.contentCenterY+200,50,50):setFillColor( 0, 0, 0 )
+    -- display.newRect(display.contentCenterX+550, display.contentCenterY+420,50,50):setFillColor( 0, 0, 0 )
+    -- display.newRect(display.contentCenterX-750, display.contentCenterY+420,50,50):setFillColor( 0, 0, 0 )
         
 
 	local sceneGroup = self.view

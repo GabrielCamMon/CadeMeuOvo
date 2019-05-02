@@ -439,8 +439,6 @@ function scene:create( event )
     seta_frente:addEventListener( "touch", funcButtonFrente(buttonsCommand,seta_frente))
 
     seta_giro:addEventListener( "touch", funcButtonGiro(buttonsCommand,seta_giro))
-    
-
 end
 
 
@@ -485,7 +483,6 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
-
 end
 
 

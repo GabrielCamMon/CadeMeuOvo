@@ -195,10 +195,11 @@ local function buttonEventMovimentFrente( event, buttonsCommand, seta_frente )
         end
     elseif ( "ended" == phase or "cancelled" == phase ) then
             seta_frente = display.newImageRect(buttonsCommand,"imgs/seta_frente_semSombra.png",60,60)
-            seta_frente.x = display.contentCenterX + 300;
-            seta_frente.y = display.contentCenterY-100;
+            seta_frente.x = display.contentWidth - 300;
+            seta_frente.y = 200;
             seta_frente.myName = "setafrente"
-          
+            seta_frente:scale(3,3)
+
 
             local funcButton = function(buttonsCommand,seta_frente)
                 return function(event)
@@ -214,20 +215,21 @@ local function buttonEventMovimentFrente( event, buttonsCommand, seta_frente )
             local buttonTableMax =  table.maxn(tableButtonsCommand)
             local positionButton = table.indexOf(tableButtonsCommand,button)
             
-            if ((button.x > (tableButtonsCommand[buttonTableMax].x + 30) and  button.x < (tableButtonsCommand[buttonTableMax].x + 75) and  button.y > (tableButtonsCommand[buttonTableMax].y - 38) and  button.y < (tableButtonsCommand[buttonTableMax].y + 38)) )then
+          if ((button.x > (tableButtonsCommand[buttonTableMax].x + 90) and  button.x < (tableButtonsCommand[buttonTableMax].x + 225) and  button.y > (tableButtonsCommand[buttonTableMax].y - 114) and  button.y < (tableButtonsCommand[buttonTableMax].y + 114)) )then
                 if(buttonTableMax == 1) then
-                    button.x = tableButtonsCommand[buttonTableMax].x + 40
+                    button.x = tableButtonsCommand[buttonTableMax].x + 120
                     button.y = tableButtonsCommand[buttonTableMax].y
                 else
-                    button.x = tableButtonsCommand[buttonTableMax].x + 46
+                    button.x = tableButtonsCommand[buttonTableMax].x + 138
                     button.y = tableButtonsCommand[buttonTableMax].y
                 end
                 
                 if (table.indexOf( tableButtonsCommand, button ))== nil then
+
                     table.insert(tableButtonsCommand, button)  
                 end
-               
-            elseif((button.x > (centralX-300) and button.x < (centralX+140) and button.y < (centralY+173) and button.y > (centralY+100 )) == false)then
+              
+            elseif((button.x > (centralX-750) and button.x < (centralX+550) and button.y < (centralY+420) and button.y > (centralY+200)) == false)then
                 display.remove(button)
                 if (table.indexOf( tableButtonsCommand, button )~= nil) then
                     for var = positionButton, buttonTableMax, 1 do
@@ -238,6 +240,7 @@ local function buttonEventMovimentFrente( event, buttonsCommand, seta_frente )
             end
      
       
+
         display.currentStage:setFocus( nil )
     end
     return true
@@ -259,10 +262,11 @@ local function buttonEventMovimentGiro( event, buttonsCommand, seta_giro )
         end
     elseif ( "ended" == phase or "cancelled" == phase ) then
         seta_giro = display.newImageRect(buttonsCommand, "imgs/seta_girar_semSobra.png",60,60)
-        seta_giro.x = display.contentCenterX + 300;
-        seta_giro.y = display.contentCenterY-40;
+        seta_giro.x = display.contentWidth - 300;
+        seta_giro.y = 400;
         seta_giro.myName = "setagiro"
-       
+        seta_giro:scale(3,3)
+
             local funcButtonGiro = function(buttonsCommand,seta_giro)
                 return function(event)
                     buttonEventMovimentGiro(event,buttonsCommand,seta_giro)
@@ -277,20 +281,21 @@ local function buttonEventMovimentGiro( event, buttonsCommand, seta_giro )
             local buttonTableMax =  table.maxn(tableButtonsCommand)
             local positionButton = table.indexOf(tableButtonsCommand,button)
             
-            if ((button.x > (tableButtonsCommand[buttonTableMax].x + 30) and  button.x < (tableButtonsCommand[buttonTableMax].x + 75) and  button.y > (tableButtonsCommand[buttonTableMax].y - 38) and  button.y < (tableButtonsCommand[buttonTableMax].y + 38)) )then
+            if ((button.x > (tableButtonsCommand[buttonTableMax].x + 90) and  button.x < (tableButtonsCommand[buttonTableMax].x + 225) and  button.y > (tableButtonsCommand[buttonTableMax].y - 114) and  button.y < (tableButtonsCommand[buttonTableMax].y + 114)) )then
                 if(buttonTableMax == 1) then
-                    button.x = tableButtonsCommand[buttonTableMax].x + 40
+                    button.x = tableButtonsCommand[buttonTableMax].x + 120
                     button.y = tableButtonsCommand[buttonTableMax].y
                 else
-                    button.x = tableButtonsCommand[buttonTableMax].x + 46
+                    button.x = tableButtonsCommand[buttonTableMax].x + 138
                     button.y = tableButtonsCommand[buttonTableMax].y
                 end
                 
                 if (table.indexOf( tableButtonsCommand, button ))== nil then
+
                     table.insert(tableButtonsCommand, button)  
                 end
-               
-            elseif((button.x > (centralX-300) and button.x < (centralX+140) and button.y < (centralY+173) and button.y > (centralY+100 )) == false)then
+              
+            elseif((button.x > (centralX-750) and button.x < (centralX+550) and button.y < (centralY+420) and button.y > (centralY+200)) == false)then
                 display.remove(button)
                 if (table.indexOf( tableButtonsCommand, button )~= nil) then
                     for var = positionButton, buttonTableMax, 1 do
@@ -299,6 +304,7 @@ local function buttonEventMovimentGiro( event, buttonsCommand, seta_giro )
                      
                 end       
             end
+     
      
       
         display.currentStage:setFocus( nil )
@@ -311,8 +317,8 @@ function scene:create( event )
 	local sceneGroup = self.view
     physics.pause()  
 
-    local blockX = -100
-    local blockY = -40
+    local blockX = -300
+    local blockY = -120
 
    
     local backGroup = display.newGroup()
@@ -333,59 +339,61 @@ function scene:create( event )
     local duckGroup = display.newGroup() 
     sceneGroup:insert( duckGroup )
    
-  
-    
-
     local positionCommand = display.newGroup();
     sceneGroup:insert( positionCommand )
+
     local circleCommand = display.newGroup();
     sceneGroup:insert( circleCommand )
+
     local buttonsCommand = display.newGroup();
     sceneGroup:insert( buttonsCommand )
 
-    local background = display.newImageRect( backGroup, "imgs/background.png", 800, 1400 )
+     local background = display.newImageRect( backGroup, "imgs/background.png",display.contentWidth, display.contentHeight )
     background.x = display.contentCenterX
     background.y = display.contentCenterY
 
-    local rectCommand = display.newRoundedRect( positionCommand ,display.contentCenterX - 60, display.contentCenterY + 135, 540, 75, 35 )
+    local rectCommand = display.newRoundedRect( positionCommand ,display.contentCenterX , display.contentCenterY + 310, 540, 75, 35 )
     rectCommand.strokeWidth = 1.5
     rectCommand:setStrokeColor( 0, 0, 0 )
+    rectCommand:scale(3,3)
 
-
-    local myCircleShadow = display.newCircle( circleCommand, display.contentCenterX+178 , display.contentCenterY+ 137, 42 )
+    local myCircleShadow = display.newCircle( circleCommand, display.contentCenterX+693 , display.contentCenterY+ 312, 42 )
     myCircleShadow:setFillColor( 0, 0, 0, 0.5 )
+    myCircleShadow:scale(3,3)
 
-    local myCircle = display.newCircle( circleCommand, display.contentCenterX+180 , display.contentCenterY+ 135, 40  )
-    myCircle.fill = { type="image", filename="imgs/play.png" }
+    local myCircle = display.newCircle( circleCommand, display.contentCenterX+695 , display.contentCenterY+ 310, 40  )
+    myCircle.fill = { type="image", filename="imgs/play_menu.png" }
     myCircle.myName = "play"
+    myCircle:scale(3,3)
 
     local startDuck = display.newImageRect( buttonsCommand, "imgs/patoStartVerde.png", 46, 46 )
-    startDuck.x = display.contentCenterX - 295
-    startDuck.y = display.contentCenterY + 135
-
+    startDuck.x = display.contentCenterX - 695
+    startDuck.y = display.contentCenterY + 310
+    startDuck:scale(3,3)
 
     local seta_frente = display.newImageRect(buttonsCommand, "imgs/seta_frente_semSombra.png",60,60)
-    seta_frente.x = display.contentCenterX + 300;
-    seta_frente.y = display.contentCenterY-100;
+    seta_frente.x = display.contentWidth - 300;
+    seta_frente.y = 200;
     seta_frente.myName = "setafrente"
+    seta_frente:scale(3,3)
 
     local seta_giro = display.newImageRect(buttonsCommand, "imgs/seta_girar_semSobra.png",60,60)
-    seta_giro.x = display.contentCenterX + 300;
-    seta_giro.y = display.contentCenterY-40;
+    seta_giro.x = display.contentWidth - 300;
+    seta_giro.y = 400;
     seta_giro.myName = "setagiro"
+    seta_giro:scale(3,3)
 
 
     local duck = display.newSprite( duckGroup, objectSheet, sequenceData)
     physics.addBody( duck, "static" )
-    duck.x = display.contentCenterX  - 102
-    duck.y = display.contentCenterY - 67
+    duck.x = display.contentCenterX - 310
+    duck.y = display.contentCenterY - 210
     duck.north_east = false
     duck.north_west = false
     duck.south_east = true
     duck.south_west = false
     duck.myName = "duck"
-    duck:scale(0.24,0.18)
-
+    duck:scale(0.72,0.54)
  
       
       
@@ -395,75 +403,70 @@ function scene:create( event )
         newBlocks.y = display.contentCenterY + blockY
         newBlocks.hasEgg = false
         newBlocks.hasDuck = false
-        newBlocks:scale(0.4,0.4)
+        newBlocks:scale(1.2,1.2)
        local egg = display.newImageRect( eggs, "imgs/egg.png", 366/14, 398/14 )
             newBlocks.hasEgg = true
             egg.x = display.contentCenterX + blockX 
-            egg.y = display.contentCenterY + blockY - 25
-            egg.status = varCreate
+            egg.y = display.contentCenterY + blockY - 75
+            egg:scale(3,3)
             table.insert(tableEggs, egg); 
             table.insert(tableBlocks, newBlocks)
     
     
-            blockX = blockX + 33        
-            blockY = blockY + 13.5
+            blockX = blockX + 99      
+            blockY = blockY + 40.5
     end
     
-    blockX = blockX - 5       
-    blockY = blockY - 25
+    blockX = blockX - 15       
+    blockY = blockY - 75
 
-local newBlocks = display.newImageRect( blockSpecial2, "imgs/bloco.png", 168, 143)
-newBlocks.x = display.contentCenterX + blockX
-newBlocks.y = display.contentCenterY + blockY
-newBlocks.hasEgg = false
-newBlocks.hasDuck = false
-newBlocks:scale(0.4,0.4)
-local egg = display.newImageRect( eggs, "imgs/egg.png", 366/14, 398/14 )
-    newBlocks.hasEgg = true
-    egg.x = display.contentCenterX + blockX 
-    egg.y = display.contentCenterY + blockY - 25
-    egg.status = varCreate
-    table.insert(tableEggs, egg); 
-    table.insert(tableBlocks, newBlocks)
+    local newBlocks = display.newImageRect( blockSpecial2, "imgs/bloco.png", 168, 143)
+    newBlocks.x = display.contentCenterX + blockX
+    newBlocks.y = display.contentCenterY + blockY
+    newBlocks.hasEgg = false
+    newBlocks.hasDuck = false
+    newBlocks:scale(1.2,1.2)
+    local egg = display.newImageRect( eggs, "imgs/egg.png", 366/14, 398/14 )
+        newBlocks.hasEgg = true
+        egg.x = display.contentCenterX + blockX 
+        egg.y = display.contentCenterY + blockY - 75
+        egg:scale(3,3)
+        table.insert(tableEggs, egg); 
+        table.insert(tableBlocks, newBlocks)
 
-    tableBlocks[1].hasDuck = true
-    display.remove(tableEggs[1])
-            
-
-
-
-    table.insert(tableButtonsCommand, startDuck)
-    
-    local funcDuck = function()
-        myCircle.fill = { type="image", filename="imgs/stop.png" }
-        if(myCircle.myName == "play")then
-            myCircle.myName = "stop"
-            return moveDuck(duck) 
-        else
-            return repeatStage()
-        end
+        tableBlocks[1].hasDuck = true
+        display.remove(tableEggs[1])
+ 
+        table.insert(tableButtonsCommand, startDuck)
         
-    end
-
-
-    local funcButtonFrente = function(buttonsCommand,seta_frente)
-        return function(event)
-            buttonEventMovimentFrente(event,buttonsCommand,seta_frente)
+        local funcDuck = function()
+            myCircle.fill = { type="image", filename="imgs/stop.png" }
+            if(myCircle.myName == "play")then
+                myCircle.myName = "stop"
+                return moveDuck(duck) 
+            else
+                return repeatStage()
+            end
+            
         end
-    end
 
-    local funcButtonGiro = function(buttonsCommand,seta_giro)
-        return function(event)
-            buttonEventMovimentGiro(event,buttonsCommand,seta_giro)
+
+        local funcButtonFrente = function(buttonsCommand,seta_frente)
+            return function(event)
+                buttonEventMovimentFrente(event,buttonsCommand,seta_frente)
+            end
         end
-    end
-    myCircle:addEventListener( "tap", funcDuck )
 
-    seta_frente:addEventListener( "touch", funcButtonFrente(buttonsCommand,seta_frente))
+        local funcButtonGiro = function(buttonsCommand,seta_giro)
+            return function(event)
+                buttonEventMovimentGiro(event,buttonsCommand,seta_giro)
+            end
+        end
+        myCircle:addEventListener( "tap", funcDuck )
 
-    seta_giro:addEventListener( "touch", funcButtonGiro(buttonsCommand,seta_giro))
-    
+        seta_frente:addEventListener( "touch", funcButtonFrente(buttonsCommand,seta_frente))
 
+        seta_giro:addEventListener( "touch", funcButtonGiro(buttonsCommand,seta_giro))
 end
 
 

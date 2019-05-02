@@ -18,4 +18,4 @@ musicTrack = audio.loadStream( "audio/patoMusic.mp3" )
 --audio.play( musicTrack, { channel=1, loops=-1 } )
 
 -- Go to the menu screen
-composer.gotoScene( "stage3" )
+composer.gotoScene( "menu" )
