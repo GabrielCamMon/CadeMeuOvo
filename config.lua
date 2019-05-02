@@ -7,17 +7,17 @@ application =
 {
 	content =
 	{
-		width = 768,
-		height = 1024, 
-		scale = "adaptive",
+		width = 1000,
+		height = 2000, 
+		scale = "zoomEven",
 		fps = 60,
 		
-		--[[
+		
 		imageSuffix =
 		{
 			    ["@2x"] = 2,
 			    ["@4x"] = 4,
 		},
-		--]]
+		
 	},
 }
