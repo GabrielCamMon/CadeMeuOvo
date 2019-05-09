@@ -1,6 +1,8 @@
 
 local composer = require( "composer" )
 
+local statusMusic = require("statusmusic")
+
 local scene = composer.newScene()
 
 local physics = require( "physics" )
@@ -58,6 +60,7 @@ local contEggs = 2
 
 
 local function nextStage()
+    composer.removeScene("stage1")
 	composer.gotoScene( "stage2", { time=800, effect="crossFade" } )
 end
 
@@ -197,6 +200,22 @@ function scene:create( event )
     local buttonsCommand = display.newGroup();
     sceneGroup:insert( buttonsCommand )
 
+    local configGroup = display.newGroup()
+    sceneGroup:insert( configGroup )
+
+    local iconMenu = display.newImageRect( configGroup, "imgs/home.png",100,100 )
+    iconMenu.x = 200
+    iconMenu.y =  110
+
+    local iconMusic = display.newRect( configGroup,340,110,90,90 )
+    if(statusMusic.myName == "play")then
+    iconMusic.fill = { type="image", filename="imgs/note_audio_music.png" }
+    else
+        iconMusic.fill = { type="image", filename="imgs/note_audio_music_cut.png" }
+    end
+    
+
+
     local background = display.newImageRect( backGroup, "imgs/background.png",display.contentWidth, display.contentHeight )
     background.x = display.contentCenterX
     background.y = display.contentCenterY
@@ -265,6 +284,25 @@ function scene:create( event )
 
     table.insert(tableButtonsCommand, startDuck)
     
+    local iconFunc = function (event)
+        local icon = event.target
+
+        while(true)do
+            if(statusMusic.myName == "play")then
+                icon.fill = { type="image", filename="imgs/note_audio_music_cut.png" }
+                statusMusic.myName = "stop"
+                audio.pause( musicTrack )
+                break
+            elseif(statusMusic.myName == "stop")then
+                icon.fill = { type="image", filename="imgs/note_audio_music.png" }
+                statusMusic.myName = "play"
+                musicTrack = audio.loadStream( "audio/patoMusic.mp3" )
+                audio.resume( musicTrack )
+                break
+            end
+        end
+    end
+
     local funcDuck = function()
         myCircle.fill = { type="image", filename="imgs/stop.png" }
         if(myCircle.myName == "play")then
@@ -284,6 +322,7 @@ function scene:create( event )
     end
     myCircle:addEventListener( "tap", funcDuck )
     seta_frente:addEventListener( "touch", funcButton(buttonsCommand,seta_frente))
+    iconMusic:addEventListener("tap", iconFunc )
 end
 
 

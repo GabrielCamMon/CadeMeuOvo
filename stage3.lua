@@ -1,5 +1,6 @@
-
 local composer = require( "composer" )
+
+local statusMusic = require("statusmusic")
 
 local scene = composer.newScene()
 
@@ -59,6 +60,7 @@ local contEggs = 1
 
 
 local function nextStage()
+    composer.removeScene("stage3")
 	composer.gotoScene( "stage4", { time=800, effect="crossFade" } )
 end
 
@@ -90,7 +92,7 @@ local function moveDuck(duck)
         elseif(duck.north_east)then
             contEggs = contEggs - 1
             transition.to( duck, { x=duck.x - (tableBlocks[2].x - tableBlocks[1].x)/2,
-             y=duck.y-6.5 + (yStep - yStep/2),
+             y=duck.y + (yStep - yStep/2),
              time = 250,
              onComplete = removeEggs} )
         end
@@ -105,31 +107,19 @@ local function moveDuck(duck)
     if((tableButtonsCommand[IndexRun]== nil)== false)then
         if(tableButtonsCommand[IndexRun].myName == "setafrente")then
             if(duck.south_east) then
-               
                     transition.to(duck, {y = duck.y - (tableBlocks[2].y - tableBlocks[1].y)/2, time =  250,onComplete= moveDuckSimpleJump})
-            
-            elseif(duck.south_west)then
-                if RouterX == 3 then
-                    RouterY = RouterY - 1
-                    transition.to( duck, { x=duck.x - (tableBlocks[2].x - tableBlocks[1].x)/2,  y=duck.y - (tableBlocks[2].y - tableBlocks[1].y)/2,time = 250, onComplete= moveDuckstep2} )
-                else
+            elseif(duck.south_west)then        
                     transition.to(duck, {y = duck.y - (tableBlocks[2].y - tableBlocks[1].y)/2, time =  250,onComplete= moveDuckSimpleJump})
-                end
-            elseif(duck.north_west)then
-                if RouterX-1 >= 0 then
-                    RouterX = RouterX -1
-                    transition.to( duck, { x=duck.x - (tableBlocks[2].x - tableBlocks[1].x)/2, y=duck.y - (tableBlocks[2].y - tableBlocks[1].y),time = 250, onComplete= moveDuckstep2} )
-                else
+            elseif(duck.north_west)then  
                     transition.to(duck, {y = duck.y - (tableBlocks[2].y - tableBlocks[1].y)/2, time =  250,onComplete= moveDuckSimpleJump})
-                end
             else
 
                 transition.to( duck, 
                 { 
                 x=duck.x - (tableBlocks[2].x - tableBlocks[1].x)/2, 
-                y=duck.y - (tableBlocks[2].y - tableBlocks[1].y),
+                y=duck.y - (tableBlocks[2].y - tableBlocks[1].y)*1.5,
                 time = 250, 
-                onComplete= moveDuckstep2
+                onComplete = moveDuckstep2
             } )
             end
         elseif(tableButtonsCommand[IndexRun].myName == "setagiro")then
@@ -323,6 +313,20 @@ function scene:create( event )
     local buttonsCommand = display.newGroup();
     sceneGroup:insert( buttonsCommand )
 
+    local configGroup = display.newGroup()
+    sceneGroup:insert( configGroup )
+
+     local iconMenu = display.newImageRect( configGroup, "imgs/home.png",100,100 )
+    iconMenu.x = 200
+    iconMenu.y =  110
+
+    local iconMusic = display.newRect( configGroup,340,110,90,90 )
+    if(statusMusic.myName == "play")then
+    iconMusic.fill = { type="image", filename="imgs/note_audio_music.png" }
+    else
+        iconMusic.fill = { type="image", filename="imgs/note_audio_music_cut.png" }
+    end
+
     local background = display.newImageRect( backGroup, "imgs/background.png",display.contentWidth, display.contentHeight )
     background.x = display.contentCenterX
     background.y = display.contentCenterY
@@ -410,7 +414,26 @@ function scene:create( event )
 
 
     table.insert(tableButtonsCommand, startDuck)
-    
+
+     local iconFunc = function (event)
+            local icon = event.target
+
+            while(true)do
+                if(statusMusic.myName == "play")then
+                    icon.fill = { type="image", filename="imgs/note_audio_music_cut.png" }
+                    statusMusic.myName = "stop"
+                    audio.pause( musicTrack )
+                    break
+                elseif(statusMusic.myName == "stop")then
+                    icon.fill = { type="image", filename="imgs/note_audio_music.png" }
+                    statusMusic.myName = "play"
+                    musicTrack = audio.loadStream( "audio/patoMusic.mp3" )
+                    audio.resume( musicTrack )
+                    break
+                end
+            end
+        end
+
     local funcDuck = function()
         myCircle.fill = { type="image", filename="imgs/stop.png" }
         if(myCircle.myName == "play")then
@@ -421,6 +444,7 @@ function scene:create( event )
         end
         
     end
+
 
 
     local funcButtonFrente = function(buttonsCommand,seta_frente)
@@ -439,6 +463,8 @@ function scene:create( event )
     seta_frente:addEventListener( "touch", funcButtonFrente(buttonsCommand,seta_frente))
 
     seta_giro:addEventListener( "touch", funcButtonGiro(buttonsCommand,seta_giro))
+
+    iconMusic:addEventListener("tap", iconFunc )
 end
 
 
