@@ -5,6 +5,8 @@ local statusMusic = require("statusmusic")
 
 local scene = composer.newScene()
 
+local restart = require( "restart" )
+
 local physics = require( "physics" )
 physics.start()
 
@@ -60,13 +62,14 @@ local contEggs = 2
 
 
 local function nextStage()
-    composer.removeScene("stage1")
 	composer.gotoScene( "stage2", { time=800, effect="crossFade" } )
 end
 
 local function repeatStage()
+
     composer.removeScene("stage1")
-    composer.gotoScene( "restart1"  )  
+    restart:getName("stage1")
+    composer.gotoScene( "restart"  )  
 end
 
 
@@ -200,6 +203,7 @@ function scene:create( event )
     local buttonsCommand = display.newGroup();
     sceneGroup:insert( buttonsCommand )
 
+
     local configGroup = display.newGroup()
     sceneGroup:insert( configGroup )
 
@@ -213,8 +217,6 @@ function scene:create( event )
     else
         iconMusic.fill = { type="image", filename="imgs/note_audio_music_cut.png" }
     end
-    
-
 
     local background = display.newImageRect( backGroup, "imgs/background.png",display.contentWidth, display.contentHeight )
     background.x = display.contentCenterX
@@ -283,7 +285,7 @@ function scene:create( event )
 
 
     table.insert(tableButtonsCommand, startDuck)
-    
+
     local iconFunc = function (event)
         local icon = event.target
 
@@ -302,7 +304,7 @@ function scene:create( event )
             end
         end
     end
-
+    
     local funcDuck = function()
         myCircle.fill = { type="image", filename="imgs/stop.png" }
         if(myCircle.myName == "play")then
@@ -322,9 +324,9 @@ function scene:create( event )
     end
     myCircle:addEventListener( "tap", funcDuck )
     seta_frente:addEventListener( "touch", funcButton(buttonsCommand,seta_frente))
+
     iconMusic:addEventListener("tap", iconFunc )
 end
-
 
 
 function scene:show( event )

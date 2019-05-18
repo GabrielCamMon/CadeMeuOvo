@@ -4,6 +4,8 @@ local statusMusic = require("statusmusic")
 
 local scene = composer.newScene()
 
+local restart = require( "restart" )
+
 local physics = require( "physics" )
 physics.start()
 
@@ -66,7 +68,8 @@ end
 
 local function repeatStage()
     composer.removeScene("stage2")
-    composer.gotoScene( "restart2"  )  
+    restart:getName("stage2")
+    composer.gotoScene( "restart"  )  
 end
 
 
@@ -326,7 +329,7 @@ function scene:create( event )
     local configGroup = display.newGroup()
     sceneGroup:insert( configGroup )
 
-     local iconMenu = display.newImageRect( configGroup, "imgs/home.png",100,100 )
+    local iconMenu = display.newImageRect( configGroup, "imgs/home.png",100,100 )
     iconMenu.x = 200
     iconMenu.y =  110
 

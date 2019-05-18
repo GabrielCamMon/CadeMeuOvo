@@ -4,6 +4,8 @@ local statusMusic = require("statusmusic")
 
 local scene = composer.newScene()
 
+local restart = require( "restart" )
+
 local physics = require( "physics" )
 physics.start()
 
@@ -66,7 +68,8 @@ end
 
 local function repeatStage()
     composer.removeScene("stage3")
-    composer.gotoScene( "restart3"  )  
+    restart:getName("stage3")
+    composer.gotoScene( "restart"  )  
 end
 
 

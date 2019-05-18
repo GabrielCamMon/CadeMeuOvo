@@ -1,13 +1,13 @@
 local composer = require( "composer" )
 
 local scene = composer.newScene()
-
-local composer = require( "composer" )
-
-local scene = composer.newScene()
-
-
+scene.myName = ""
 -- create()
+
+function scene:getName(name)
+    scene.myName = name
+end
+
 function scene:create( event )
 
     local sceneGroup = self.view
@@ -27,8 +27,8 @@ function scene:show( event )
 
     elseif ( phase == "did" ) then
 
-        composer.removeScene("restart3")
-        composer.gotoScene( "stage3", "fade"  )
+        composer.removeScene("restart")
+        composer.gotoScene( scene.myName, "fade"  )
 
     end
 end

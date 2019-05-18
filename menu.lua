@@ -28,11 +28,22 @@ function scene:create( event )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
+
+  local myCircleShadow = display.newCircle(  sceneGroup, display.contentCenterX+2, display.contentCenterY+100, 230)
+    myCircleShadow:setFillColor( 0, 0, 0, 0.5 )
+ 
     local playButton = display.newImageRect( sceneGroup, "imgs/play_menu.png", 150, 150 )
 	playButton.x = display.contentCenterX
-	playButton.y = display.contentCenterY
+	playButton.y = display.contentCenterY+ 100
 	playButton:scale(3,3)
 
+	local displayText = display.newText( sceneGroup,"Duck's Eggs", display.contentCenterX - 120,display.contentCenterY-300, "Breathe/Breathe-Press.ttf", 300 )
+	displayText:setTextColor( 0, 0, 0 )
+
+	local egg = display.newImageRect( sceneGroup, "imgs/eggMenu.png", 260, 354 )
+	egg.x = display.contentCenterX + 600
+	egg.y = display.contentCenterY -300
+	
 
 	playButton:addEventListener( "tap", gotoGame )
 end
@@ -65,7 +76,7 @@ function scene:hide( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
-
+	
 	end
 end
 
