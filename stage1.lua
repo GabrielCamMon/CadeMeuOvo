@@ -60,10 +60,17 @@ local IndexRun = 1
 local TableMax = 0
 local contEggs = 2
 
+local function gotoMenu()
+     composer.removeScene("stage1")
+    composer.gotoScene( "menu", { time=800, effect="crossFade" } )
+end
 
 local function nextStage()
-	composer.gotoScene( "stage2", { time=800, effect="crossFade" } )
+     
+     composer.removeScene("stage1")
+    composer.gotoScene( "stage2", { time=800, effect="crossFade" } )
 end
+
 
 local function repeatStage()
 
@@ -326,6 +333,7 @@ function scene:create( event )
     seta_frente:addEventListener( "touch", funcButton(buttonsCommand,seta_frente))
 
     iconMusic:addEventListener("tap", iconFunc )
+    iconMenu:addEventListener("tap", gotoMenu )
 end
 
 

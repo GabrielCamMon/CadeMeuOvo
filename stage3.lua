@@ -66,6 +66,13 @@ local function nextStage()
 	composer.gotoScene( "stage4", { time=800, effect="crossFade" } )
 end
 
+
+local function gotoMenu()
+    composer.removeScene("stage3")
+    composer.gotoScene( "menu", { time=800, effect="crossFade" } )
+end
+
+
 local function repeatStage()
     composer.removeScene("stage3")
     restart:getName("stage3")
@@ -468,6 +475,7 @@ function scene:create( event )
     seta_giro:addEventListener( "touch", funcButtonGiro(buttonsCommand,seta_giro))
 
     iconMusic:addEventListener("tap", iconFunc )
+    iconMenu:addEventListener("tap", gotoMenu )
 end
 
 

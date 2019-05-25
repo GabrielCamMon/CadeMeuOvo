@@ -9,7 +9,8 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
 
 local function gotoGame()
-	composer.gotoScene( "stage1", { time=800, effect="crossFade" } )
+	composer.removeScene("final")
+	composer.gotoScene( "menu", { time=800, effect="crossFade" } )
 end
 
 
@@ -28,27 +29,20 @@ function scene:create( event )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
+local medalha = display.newImageRect( sceneGroup, "imgs/medalha.png", 700, 700 )
+	medalha.x = display.contentCenterX
+	medalha.y = display.contentCenterY
 
-  local myCircleShadow = display.newCircle(  sceneGroup, display.contentCenterX+2, display.contentCenterY+100, 230)
-    myCircleShadow:setFillColor( 0, 0, 0, 0.5 )
- 
-    local playButton = display.newImageRect( sceneGroup, "imgs/play_menu.png", 150, 150 )
-	playButton.x = display.contentCenterX
-	playButton.y = display.contentCenterY+ 100
-	playButton:scale(3,3)
+
+	local displayText = display.newText( sceneGroup,"Congratulations!!", display.contentCenterX ,display.contentCenterY-250, "breathe/breathe_regular.ttf", 200 )
+	displayText:setTextColor( 255, 0.92, 0.14 )
+	local displayText = display.newText( sceneGroup,"You Won", display.contentCenterX ,display.contentCenterY-50, "breathe/breathe_regular.ttf", 200 )
+	displayText:setTextColor( 255, 0.92, 0.14 )
 
 	
-
-	local displayText = display.newImageRect( sceneGroup, "imgs/logotext.png", 1122, 360 )
-	displayText.x = display.contentCenterX - 100
-	displayText.y = display.contentCenterY -300
-
-	local egg = display.newImageRect( sceneGroup, "imgs/eggMenu.png", 260, 354 )
-	egg.x = display.contentCenterX + 600
-	egg.y = display.contentCenterY -300
 	
 
-	playButton:addEventListener( "tap", gotoGame )
+background:addEventListener( "tap", gotoGame )
 end
 
 

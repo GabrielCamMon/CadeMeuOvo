@@ -61,7 +61,7 @@ local TableMax = 0
 local contEggs = 4
 
 
-local function nextStage()
+local function gotoMenu()
     composer.removeScene("stage4")
 	composer.gotoScene( "menu", { time=800, effect="crossFade" } )
 end
@@ -70,6 +70,12 @@ local function repeatStage()
     composer.removeScene("stage4")
     restart:getName("stage4")
     composer.gotoScene("restart")  
+end
+
+
+local function nextStage()
+    composer.removeScene("stage4")
+    composer.gotoScene( "final", { time=800, effect="crossFade" } )
 end
 
 
@@ -507,6 +513,7 @@ function scene:create( event )
         seta_giro:addEventListener( "touch", funcButtonGiro(buttonsCommand,seta_giro))
 
         iconMusic:addEventListener("tap", iconFunc )
+        iconMenu:addEventListener("tap", gotoMenu )
 end
 
 
